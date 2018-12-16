@@ -53,6 +53,12 @@ body:before {
     margin-bottom: 15px;
 }
 
+ul.checklist-group {
+    column-count: 2;
+    column-gap: 20px;
+    list-style-type: none;
+}
+
 input {
     padding-left: 10px;
     outline: none;

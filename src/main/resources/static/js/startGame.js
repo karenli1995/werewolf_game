@@ -1,7 +1,7 @@
 'use strict'
 
 var playerNamesInput = document.querySelector('#player_names');
-var chosenCharactersInput = document.querySelector('#chosen_characters');
+var chosenCharactersInput = document.getElementsByName('chosen_characters');
 var newGameIdInput = document.querySelector('#new_game_id');
 var joinGameIdInput = document.querySelector('#join_game_id');
 
@@ -16,6 +16,8 @@ var midCardsArea = document.querySelector('#midCardsArea');
 midCardsArea.setAttribute('horizontal','');
 var playersArea = document.querySelector('#playersArea');
 playersArea.setAttribute('horizontal','');
+
+var newGame = false;
 
 var gameId = null;
 var numPlayers = null;
@@ -40,11 +42,19 @@ var stompClient = null;
 //If it is a host filling out the form, we can begin the chat.
 //If it is a client filling out the form, we will validate that the room they plan to join already exists.
 function newGameConnect(event) {
+	newGame = true;
 	var newGameId = newGameIdInput.value.trim();
 	var playerNamesStr = playerNamesInput.value.trim();
-	var chosenCharactersStr = chosenCharactersInput.value.trim();
+
+	var chosenCharactersStr = '';
+	for (var i=0, n=chosenCharactersInput.length;i<n;i++) {
+		if (chosenCharactersInput[i].checked) {
+			chosenCharactersStr += chosenCharactersInput[i].value + ' ';
+		}
+	}
+
 	var playerNamesList = playerNamesStr.split(" ");
-	var chosenCharactersList = chosenCharactersStr.split(" ");
+	var chosenCharactersList = chosenCharactersStr.trim().split(" ");
 
 	currPlayersList = playerNamesList;
 	chosenCharsList = chosenCharactersList;
@@ -52,16 +62,17 @@ function newGameConnect(event) {
 	gameId = newGameId;
 
 	//if(validateHostInput(newGameId)) {
-		startGame();
+	startGame();
 	//}
 }
 
 function joinGameConnect(event) {
+	newGame = false;
 	var joinGameId = joinGameIdInput.value.trim();
 	gameId = joinGameId;
 
 	//if(validateClientInput(joinGameId)) {
-		joinGame();
+	joinGame();
 	//}
 }
 
@@ -98,43 +109,41 @@ function createGUI(payload) {
 	var gameAreaElement = document.createElement('span');
 	gameAreaElement.style.display = 'inline-block';
 //	gameAreaElement.classList.add('chat-message');
-	
+
 	for (var i = 0; i < middleCardsList.length; i++) { 
 		var newCard = card.cloneNode(true);
 		var midCardIdText = document.createTextNode(i+1);
-	    
-	    newCard.addEventListener("ondblclick", function() {
-			alert("This card was: " + middleCardsList[i]);
+
+		newCard.addEventListener("ondblclick", function() {
+			window.alert("This card was: " + middleCardsList[i]);
 		});
-				
+
 		(function(idx, currCard) {
 			newCard.addEventListener("click", function() { cardClick(idx, currCard); }, false);
-		   	})(i, newCard);
+		})(i, newCard);
 
 		newCard.appendChild(midCardIdText);
 
 		gameAreaElement.appendChild(newCard);
 	}
-	
-	//TODO: iterate through playersToCharDict
+
+	//iterate through playersToCharDict
 	var numCardsSoFar = 0;
 	Object.keys(playerToCharDict).forEach(function(key) {
 		var newCard = card.cloneNode(true);
 		var playerIdText = document.createTextNode(key);
-	    
-	    numCardsSoFar = numCardsSoFar+1;
-		
-	    newCard.addEventListener("ondblclick", function() {
-			alert("This card was: " + playerToCharDict[key]);
+
+		numCardsSoFar = numCardsSoFar+1;
+
+		newCard.addEventListener("ondblclick", function() {
+			window.alert("This card was: " + playerToCharDict[key]);
 		});
-				
+
 		(function(idx, currCard) {
 			newCard.addEventListener("click", function() { cardClick(idx, currCard); }, false);
-		   	})(key, newCard);
-//		avatarElement.addEventListener("click",  function() { cardClick(idx); }, false);
+		})(key, newCard);
 
 		newCard.appendChild(playerIdText);
-		//avatarElement.style['background-color'] = getAvatarColor(message.sender);
 
 		gameAreaElement.appendChild(newCard);
 	});
@@ -142,7 +151,7 @@ function createGUI(payload) {
 	playersArea.appendChild(gameAreaElement);
 	playersArea.replaceChild(gameAreaElement, playersArea.childNodes[0]);
 	playersArea.scrollTop = playersArea.scrollHeight;
-	
+
 	midCardsArea.appendChild(gameAreaElement);
 	midCardsArea.replaceChild(gameAreaElement, midCardsArea.childNodes[0]);
 }
@@ -154,22 +163,26 @@ function createGUI(payload) {
 function enterRoom() {
 	roomIdDisplay.textContent = gameId;
 
+	var newGameData = {
+			id: gameId,
+			characters: chosenCharsList,
+			players: currPlayersList,
+			roleAssignments: playerToCharDict,
+			middleCards: middleCardsList
+	};
+
+	stompClient.send(`/app/game.startGame/${gameId}`,
+			{},
+			JSON.stringify(newGameData)
+	);
+
+
 	if (currentSubscription) {
 		currentSubscription.unsubscribe();
 	}
 
 	// Subscribe to the Public Topic
-	currentSubscription = stompClient.subscribe(`/topic/public/${gameId}`, createGUI); //was onMessageReceived //let's pass the Game object
-
-	var newGame = {
-			characters: chosenCharsList,
-			players: currPlayersList
-	};
-
-	stompClient.send(`/app/game.startGame/${gameId}`,
-			{},
-			JSON.stringify(newGame)
-	);
+	currentSubscription = stompClient.subscribe(`/topic/public/${gameId}`, createGUI); //let's pass the Game object
 }
 
 //Triggered on connection to the "/gameroom" STOMP client
@@ -181,13 +194,13 @@ function onConnected() {
 
 var cardClick = function(id, currCard) {	
 	currCard.innerHTML = "<img src=\"/images/card_back_selected.jpeg\" width=\"100\">";
-	
+
 	if(id === firstCardSelected) return; //TODO: determine if needed
 
 	if (firstCardSelected == false && secondCardSelected == false) { //no card has been selected
 		firstCardSelected = id;
 	} else if (firstCardSelected !== false && secondCardSelected !== false) { // both cards selected; update dict and send to server
-				
+
 		//determine if there is a middle card selected
 		var middleCardIndex = null;
 		var firstCardIsMiddle = false;
@@ -195,7 +208,7 @@ var cardClick = function(id, currCard) {
 		if (Number.isInteger(firstCardSelected) && Number.isInteger(secondCardSelected)) {
 			//TODO: Throw an error
 		}
-		
+
 		//figure out which card chosen was the middle card, if there was one...
 		if (Number.isInteger(firstCardSelected)) {
 			firstCardIsMiddle = true;
@@ -203,7 +216,7 @@ var cardClick = function(id, currCard) {
 		} else if (Number.isInteger(secondCardSelected)) {
 			middleCardIndex = secondCardSelected;
 		} 
-		
+
 		//if no middle card just switch the roleAssignments map
 		if (middleCardIndex == null) {
 			var playerCharacter1 = playerToCharDict[firstCardSelected];
@@ -220,20 +233,21 @@ var cardClick = function(id, currCard) {
 				switchCards(firstCardSelected, middleCardIndex, middleCharacter);
 			}			
 		}
-		
+
 		//reset any selected cards
 		firstCardSelected = secondCardSelected = false;
-		
+
 		var updatedGame = {
+				id: gameId,
 				roleAssignments: playerToCharDict,
 				middleCards: middleCardsList
 		};
-		
+
 		stompClient.send(`/app/game.playGame/${gameId}`,
 				{},
 				JSON.stringify(updatedGame)
 		);
-	
+
 	} else if (firstCardSelected !== false && secondCardSelected == false) { // one card has been selected
 		secondCardSelected = id;
 	}

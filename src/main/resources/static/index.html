@@ -4,7 +4,7 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 <title>One Night Werewolf (created with Spring Boot and Websocket)</title>
-<link rel="stylesheet" href="/css/main.css" />
+<link rel="stylesheet" href="/css/main.css?1" />
 </head>
 
 <body onload="createStompClientForRetrievingAvailableRooms()">
@@ -26,8 +26,25 @@
 						autocomplete="off" class="form-control" /> 
 					<input type="text" id="player_names" placeholder="Player Names"
 						autocomplete="off" class="form-control" /> 
-					<input type="text" id="chosen_characters" placeholder="Characters For Game"
-						autocomplete="off" class="form-control" /> 
+						
+					<ul class="checklist-group">
+					<li><input type="checkbox" name=chosen_characters value="WEREWOLF1"> Werewolf 1 </li>
+					<li><input type="checkbox" name=chosen_characters value="WEREWOLF2"> Werewolf 2 </li>
+					<li><input type="checkbox" name=chosen_characters value="SEER"> Seer </li>
+					<li><input type="checkbox" name=chosen_characters value="ROBBER"> Robber </li>
+					<li><input type="checkbox" name=chosen_characters value="TROUBLEMAKER"> Troublemaker </li>
+					<li><input type="checkbox" name=chosen_characters value="TANNER"> Tanner </li>
+					<li><input type="checkbox" name=chosen_characters value="DRUNK"> Drunk </li>
+					<li><input type="checkbox" name=chosen_characters value="HUNTER"> Hunter </li>					
+					<li><input type="checkbox" name=chosen_characters value="MASON1"> Mason 1 </li>
+					<li><input type="checkbox" name=chosen_characters value="MASON2"> Mason 2 </li>
+					<li><input type="checkbox" name=chosen_characters value="INSOMNIAC"> Insomniac </li>
+					<li><input type="checkbox" name=chosen_characters value="MINION"> Minion </li>
+					<li><input type="checkbox" name=chosen_characters value="DOPPELGANGER"> Doppelganger </li>
+					<li><input type="checkbox" name=chosen_characters value="VILLAGER1"> Villager 1 </li>
+					<li><input type="checkbox" name=chosen_characters value="VILLAGER2"> Villager 2 </li>
+					<li><input type="checkbox" name=chosen_characters value="VILLAGER3"> Villager 3 </li>
+					</ul>
 				</div>
 				<div class="form-group">
 					<button type="submit" class="accent new-game-page-submit">Start New Game</button>

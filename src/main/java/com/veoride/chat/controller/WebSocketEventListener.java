@@ -2,7 +2,7 @@ package com.veoride.chat.controller;
 
 import static java.lang.String.format;
 
-import com.veoride.chat.backend.ChatManager;
+import com.veoride.chat.backend.GameManager;
 import com.veoride.chat.model.Message;
 import com.veoride.chat.properties.ApplicationProperties;
 

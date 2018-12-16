@@ -4,8 +4,9 @@ import static java.lang.String.format;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import com.veoride.chat.backend.ChatManager;
+import com.veoride.chat.backend.GameManager;
 import com.veoride.chat.model.Characters;
 import com.veoride.chat.model.Game;
 import com.veoride.chat.model.Message;
@@ -24,13 +25,13 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class ChatController {
-    private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 
-    @Autowired
-    private ApplicationProperties appProps;
-    
 	@Autowired
-	private ChatManager chatManager;
+	private ApplicationProperties appProps;
+
+	@Autowired
+	private GameManager gameManager;
 
 	@Autowired
 	private SimpMessageSendingOperations messagingTemplate;
@@ -41,24 +42,14 @@ public class ChatController {
 	 */
 	@MessageMapping("/chat.availableRooms")
 	public void getAvailableChatRooms(@Payload List<String> chatRooms) {
-		List<String> roomIds = this.chatManager.getMyRoomIds();
-		if (!roomIds.isEmpty()) {
-			logger.info("Current Active Room Ids: " + roomIds.size());
-			messagingTemplate.convertAndSend(appProps.getMessagingTemplateAvailableRooms(), roomIds);
+		List<String> gameIds = this.gameManager.getActiveGameIds();
+		if (!gameIds.isEmpty()) {
+			logger.info("Current Active Game Ids: " + gameIds.size());
+			messagingTemplate.convertAndSend(appProps.getMessagingTemplateAvailableRooms(), gameIds);
 		} else {
-			logger.info("No Active Room Ids");
+			logger.info("No Active Games");
 
 		}
-	}
-
-	/**
-	 * Sends a message to a specified room ID.
-	 * @param roomId ID of chat room message is sent to
-	 * @param chatMessage message
-	 */
-	@MessageMapping("/chat.sendMessage/{roomId}")
-	public void sendMessage(@DestinationVariable String roomId, @Payload Message chatMessage) {
-		messagingTemplate.convertAndSend(format(appProps.getMessagingTemplateChatRoom(), roomId), chatMessage);
 	}
 
 	/**
@@ -70,35 +61,29 @@ public class ChatController {
 	@MessageMapping("/game.startGame/{currGameId}")
 	public void startGame(@DestinationVariable String currGameId, @Payload Game game, 
 			SimpMessageHeaderAccessor headerAccessor) {
-		
-		String[] players = game.getPlayers();
-		String[] characters = game.getCharacters();
-		
-		game.chooseCharacters(players, characters);
-		game.chooseMiddleCards();
-		game.assignPlayers(players);
-		
-		messagingTemplate.convertAndSend(format(appProps.getMessagingTemplateChatRoom(), currGameId), game);
 
-		
-//		String username = chatMessage.getSender();
-//		//gets the last room ID that user was in
-//		String prevRoomId = (String) headerAccessor.getSessionAttributes().put("room_id", currRoomId);
-//		if (prevRoomId != null) {
-//			Message leaveMessage = new Message();
-//			leaveMessage.setType(MessageType.LEAVE);
-//			leaveMessage.setSender(username);
-//            leaveMessage.setContent(username + " left!");
-//            
-////    		headerAccessor.getSessionAttributes().put("hostname", hostName);
-//			messagingTemplate.convertAndSend(format(appProps.getMessagingTemplateChatRoom(), prevRoomId), leaveMessage);
-//		}
-//
-//		// Add username in web socket session
-//		headerAccessor.getSessionAttributes().put("username", username);
-//		messagingTemplate.convertAndSend(format(appProps.getMessagingTemplateChatRoom(), currRoomId), chatMessage);
+		Optional<Game> currGame = gameManager.getRoomById(currGameId);
+		if (currGame.isPresent()) {
+			currGame.get().setId(currGameId);
+			gameManager.addChatRoom(currGame.get());
+			
+			messagingTemplate.convertAndSend(format(appProps.getMessagingTemplateChatRoom(), currGameId), currGame.get());
+		} else {
+			String[] players = game.getPlayers();
+			String[] characters = game.getCharacters();
+
+			game.chooseCharacters(players, characters);
+			game.chooseMiddleCards();
+			game.assignPlayers(players);
+			game.setId(currGameId);
+
+			gameManager.addChatRoom(game);
+			
+			messagingTemplate.convertAndSend(format(appProps.getMessagingTemplateChatRoom(), currGameId), game);
+		}
+
 	}
-	
+
 	/**
 	 * 
 	 * @param currRoomId
@@ -108,14 +93,21 @@ public class ChatController {
 	@MessageMapping("/game.playGame/{currGameId}")
 	public void playGame(@DestinationVariable String currGameId, @Payload Game game, 
 			SimpMessageHeaderAccessor headerAccessor) {
-		
+
 		Map<String, Characters> roleAssignments = game.getRoleAssignments();
 		Characters[] middleCards = game.getMiddleCards();
-		
-		game.setRoleAssignments(roleAssignments);
-		game.setMiddleCards(middleCards);
-		
-		messagingTemplate.convertAndSend(format(appProps.getMessagingTemplateChatRoom(), currGameId), game);
+
+		Optional<Game> currGame = gameManager.getRoomById(currGameId);
+		if (currGame.isPresent()) {
+			currGame.get().setId(currGameId);
+			currGame.get().setRoleAssignments(roleAssignments);
+			currGame.get().setMiddleCards(middleCards);
+			gameManager.addChatRoom(currGame.get());
+		} else {
+			//TODO: throw error
+		}
+
+		messagingTemplate.convertAndSend(format(appProps.getMessagingTemplateChatRoom(), currGameId), currGame.get());
 	}
 
 }

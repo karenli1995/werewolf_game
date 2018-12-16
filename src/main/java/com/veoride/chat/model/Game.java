@@ -111,28 +111,24 @@ public class Game implements Serializable {
         chosenCharacters = new ArrayList<Characters>();
         roleAssignments = new HashMap<String, Characters>();
 		
-		
-        int[] initRoles = new int[chars.length];
-        for(int j=0; j<initRoles.length; j++) {
-            initRoles[j] = Integer.parseInt(chars[j]);
+        for(int j=0; j<chars.length; j++) {
+        	chosenCharacters.add(Characters.valueOf(chars[j]));
         }
-        System.out.println("YO" + initRoles);
+		
+//        int[] initRoles = new int[chars.length];
+//        for(int j=0; j<initRoles.length; j++) {
+//            initRoles[j] = Integer.parseInt(chars[j]);
+//        }
         
         myNumPlayers = playerNames.length;
 
-//        System.out.println("Enter the numbers of players you wish to use separated by a single space between each. \n"
-//                + "(1) Werewolf1 (2) Werewolf2 (3) Seer (4) Robber (5) Troublemaker (6) Tanner \n"
-//                + "(7) Drunk (8) Hunter (9) Mason1 (10) Mason2 (11) Insomniac (12) Minion \n"
-//                + "(13) Doppelganger (14) Villager1 (15) Villager2 (16) Villager3 \n"
-//                + "(For example, enter 1 5 8 9 2): ");
-
-        int i = 0;
-        while (i < myNumPlayers + 3) {
-            int n = initRoles[i] - 1;
-            //check that it is num between 1-size(allCharacters)
-            chosenCharacters.add(allCharacters.get(n));
-            i++;
-        }
+//        int i = 0;
+//        while (i < myNumPlayers + 3) {
+//            int n = initRoles[i] - 1;
+//            //check that it is num between 1-size(allCharacters)
+//            chosenCharacters.add(allCharacters.get(n));
+//            i++;
+//        }
         System.out.println("HI" + chosenCharacters);
     }
     
