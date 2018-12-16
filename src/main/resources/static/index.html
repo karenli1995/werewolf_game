@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+<title>One Night Werewolf (created with Spring Boot and Websocket)</title>
+<link rel="stylesheet" href="/css/main.css" />
+</head>
+
+<body onload="createStompClientForRetrievingAvailableRooms()">
+
+	<div id="home-page">
+		<div class="home-page-container">
+			<h1 class="title">Werewolf</h1>
+			<button id=host-start-game>Start a New Game</button>
+			<button id=client-join-game>Join a Game</button>
+		</div>
+	</div>
+
+	<div id="new-game-page" class="hidden">
+		<div class="new-game-page-container">
+			<h1 class="title">Enter Game Information</h1>
+			<form id="newGameForm" name="newGameForm">
+				<div class="form-group">
+					<input type="text" id="new_game_id" placeholder="Game ID"
+						autocomplete="off" class="form-control" /> 
+					<input type="text" id="player_names" placeholder="Player Names"
+						autocomplete="off" class="form-control" /> 
+					<input type="text" id="chosen_characters" placeholder="Characters For Game"
+						autocomplete="off" class="form-control" /> 
+				</div>
+				<div class="form-group">
+					<button type="submit" class="accent new-game-page-submit">Start New Game</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	
+	<div id="join-game-page" class="hidden">
+		<div class="join-game-page-container">
+			<h1 class="title">Enter Game Information</h1>
+			<p>Available Games To Join:</p>
+			<div id="available-rooms"></div>
+			<form id="joinGameForm" name="joinGameForm">
+				<div class="form-group">
+					<input type="text" id="join_game_id" placeholder="Game ID"
+						autocomplete="off" class="form-control" />
+				</div>
+				<div class="form-group">
+					<button type="submit" class="accent join-game-page-submit">Join Game</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div id="chat-page" class="hidden">
+		<div class="chat-container">
+			<div class="chat-header">
+				<h2>
+					Game [<span id="room-id-display"></span>]
+				</h2>
+			</div>
+			<div class="connecting">Connecting...</div>
+			<div id="midCardsArea">
+			
+			</div>
+			<div id="playersArea">
+
+			</div>
+		</div>
+	</div>
+
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>	
+	<script src="/js/home.js"></script>
+	<script src="/js/startGame.js"></script>
+	<script src="/js/playGame.js"></script>
+	
+</body>
+</html>
