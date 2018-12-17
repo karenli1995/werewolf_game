@@ -5,11 +5,11 @@ var chosenCharactersInput = document.getElementsByName('chosen_characters');
 var newGameIdInput = document.querySelector('#new_game_id');
 var joinGameIdInput = document.querySelector('#join_game_id');
 
-var chatPage = document.querySelector('#chat-page');
+var chatPage = document.querySelector('#game-page');
 var newGamePage = document.querySelector('#new-game-page');
 var newGameForm = document.querySelector('#newGameForm');
 var joinGameForm = document.querySelector('#joinGameForm');
-var roomIdDisplay = document.querySelector('#room-id-display');
+var roomIdDisplay = document.querySelector('#game-id-display');
 var connectingElement = document.querySelector('.connecting');
 
 var midCardsArea = document.querySelector('#midCardsArea');
@@ -195,7 +195,7 @@ function onConnected() {
 var cardClick = function(id, currCard) {	
 	currCard.innerHTML = "<img src=\"/images/card_back_selected.jpeg\" width=\"100\">";
 
-	if(id === firstCardSelected) return; //TODO: determine if needed
+	if(id === firstCardSelected) return;
 
 	if (firstCardSelected == false && secondCardSelected == false) { //no card has been selected
 		firstCardSelected = id;
@@ -206,7 +206,9 @@ var cardClick = function(id, currCard) {
 		var firstCardIsMiddle = false;
 		//only one of the cards can possibly be a middle card
 		if (Number.isInteger(firstCardSelected) && Number.isInteger(secondCardSelected)) {
-			//TODO: Throw an error
+//			window.alert("Thou cannot choose 2 middle cards. Try again.");
+//			firstCardSelected = secondCardSelected = false;
+//			return;
 		}
 
 		//figure out which card chosen was the middle card, if there was one...

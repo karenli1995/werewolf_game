@@ -1,4 +1,4 @@
-package com.veoride.chat.properties;
+package com.veoride.werewolf.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

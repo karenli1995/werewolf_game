@@ -1,4 +1,4 @@
-package com.veoride.chat.backend;
+package com.veoride.werewolf.backend;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 
-import com.veoride.chat.model.Game;
+import com.veoride.werewolf.model.Game;
 
 /**
  * Manages addition or removal of game rooms.

@@ -3,7 +3,8 @@
 <head>
 <meta name="viewport"
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
-<title>One Night Werewolf (created with Spring Boot and Websocket)</title>
+<title>One Night Werewolf (created with Spring Boot and
+	Websocket)</title>
 <link rel="stylesheet" href="/css/main.css?1" />
 </head>
 
@@ -23,36 +24,53 @@
 			<form id="newGameForm" name="newGameForm">
 				<div class="form-group">
 					<input type="text" id="new_game_id" placeholder="Game ID"
-						autocomplete="off" class="form-control" /> 
-					<input type="text" id="player_names" placeholder="Player Names"
-						autocomplete="off" class="form-control" /> 
-						
+						autocomplete="off" class="form-control" /> <input type="text"
+						id="player_names" placeholder="Player Names" autocomplete="off"
+						class="form-control" />
+
 					<ul class="checklist-group">
-					<li><input type="checkbox" name=chosen_characters value="WEREWOLF1"> Werewolf 1 </li>
-					<li><input type="checkbox" name=chosen_characters value="WEREWOLF2"> Werewolf 2 </li>
-					<li><input type="checkbox" name=chosen_characters value="SEER"> Seer </li>
-					<li><input type="checkbox" name=chosen_characters value="ROBBER"> Robber </li>
-					<li><input type="checkbox" name=chosen_characters value="TROUBLEMAKER"> Troublemaker </li>
-					<li><input type="checkbox" name=chosen_characters value="TANNER"> Tanner </li>
-					<li><input type="checkbox" name=chosen_characters value="DRUNK"> Drunk </li>
-					<li><input type="checkbox" name=chosen_characters value="HUNTER"> Hunter </li>					
-					<li><input type="checkbox" name=chosen_characters value="MASON1"> Mason 1 </li>
-					<li><input type="checkbox" name=chosen_characters value="MASON2"> Mason 2 </li>
-					<li><input type="checkbox" name=chosen_characters value="INSOMNIAC"> Insomniac </li>
-					<li><input type="checkbox" name=chosen_characters value="MINION"> Minion </li>
-					<li><input type="checkbox" name=chosen_characters value="DOPPELGANGER"> Doppelganger </li>
-					<li><input type="checkbox" name=chosen_characters value="VILLAGER1"> Villager 1 </li>
-					<li><input type="checkbox" name=chosen_characters value="VILLAGER2"> Villager 2 </li>
-					<li><input type="checkbox" name=chosen_characters value="VILLAGER3"> Villager 3 </li>
+						<li><input type="checkbox" name=chosen_characters
+							value="WEREWOLF1"> Werewolf 1</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="WEREWOLF2"> Werewolf 2</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="SEER"> Seer</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="ROBBER"> Robber</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="TROUBLEMAKER"> Troublemaker</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="TANNER"> Tanner</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="DRUNK"> Drunk</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="HUNTER"> Hunter</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="MASON1"> Mason 1</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="MASON2"> Mason 2</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="INSOMNIAC"> Insomniac</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="MINION"> Minion</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="DOPPELGANGER"> Doppelganger</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="VILLAGER1"> Villager 1</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="VILLAGER2"> Villager 2</li>
+						<li><input type="checkbox" name=chosen_characters
+							value="VILLAGER3"> Villager 3</li>
 					</ul>
 				</div>
 				<div class="form-group">
-					<button type="submit" class="accent new-game-page-submit">Start New Game</button>
+					<button type="submit" class="accent new-game-page-submit">Start
+						New Game</button>
 				</div>
 			</form>
 		</div>
 	</div>
-	
+
 	<div id="join-game-page" class="hidden">
 		<div class="join-game-page-container">
 			<h1 class="title">Enter Game Information</h1>
@@ -64,36 +82,45 @@
 						autocomplete="off" class="form-control" />
 				</div>
 				<div class="form-group">
-					<button type="submit" class="accent join-game-page-submit">Join Game</button>
+					<button type="submit" class="accent join-game-page-submit">Join
+						Game</button>
 				</div>
 			</form>
 		</div>
 	</div>
 
-	<div id="chat-page" class="hidden">
-		<div class="chat-container">
-			<div class="chat-header">
+	<div id="game-page" class="hidden">
+		<div class="navbar">
+			<div class="homeDropdown">
+				<button class="homeDropdownBtn">
+					Home <i class="fa fa-carent-down"></i>
+				</button>
+				<div class="homeDropdownContent">
+					<a href="#">New Game</a> <a href="#">End Game</a>
+				</div>
+			</div>
+			<a href="#instructions">Instructions</a>
+
+		</div>
+		<div class="game-container">
+			<div class="game-header">
 				<h2>
-					Game [<span id="room-id-display"></span>]
+					Game [<span id="game-id-display"></span>]
 				</h2>
 			</div>
 			<div class="connecting">Connecting...</div>
-			<div id="midCardsArea">
-			
-			</div>
-			<div id="playersArea">
-
-			</div>
+			<div id="midCardsArea"></div>
+			<div id="playersArea"></div>
 		</div>
 	</div>
 
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
 	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>	
+		src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 	<script src="/js/home.js"></script>
 	<script src="/js/startGame.js"></script>
 	<script src="/js/playGame.js"></script>
-	
+
 </body>
 </html>

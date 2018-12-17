@@ -1,4 +1,4 @@
-package com.veoride.chat;
+package com.veoride.werewolf;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

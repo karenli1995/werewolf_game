@@ -1,17 +1,10 @@
-package com.veoride.chat.controller;
+package com.veoride.werewolf.controller;
 
 import static java.lang.String.format;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import com.veoride.chat.backend.GameManager;
-import com.veoride.chat.model.Characters;
-import com.veoride.chat.model.Game;
-import com.veoride.chat.model.Message;
-import com.veoride.chat.model.Message.MessageType;
-import com.veoride.chat.properties.ApplicationProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +16,14 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
+import com.veoride.werewolf.backend.GameManager;
+import com.veoride.werewolf.model.Characters;
+import com.veoride.werewolf.model.Game;
+import com.veoride.werewolf.properties.ApplicationProperties;
+
 @Controller
-public class ChatController {
-	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
+public class GameController {
+	private static final Logger logger = LoggerFactory.getLogger(GameController.class);
 
 	@Autowired
 	private ApplicationProperties appProps;
@@ -37,11 +35,11 @@ public class ChatController {
 	private SimpMessageSendingOperations messagingTemplate;
 
 	/**
-	 * Server sends all available chat rooms to the client side.
-	 * @param chatRooms
+	 * Server sends all available game rooms to the client side.
+	 * @param gameRooms
 	 */
-	@MessageMapping("/chat.availableRooms")
-	public void getAvailableChatRooms(@Payload List<String> chatRooms) {
+	@MessageMapping("/game.availableRooms")
+	public void getAvailableGameRooms(@Payload List<String> gameRooms) {
 		List<String> gameIds = this.gameManager.getActiveGameIds();
 		if (!gameIds.isEmpty()) {
 			logger.info("Current Active Game Ids: " + gameIds.size());
@@ -54,8 +52,8 @@ public class ChatController {
 
 	/**
 	 * 
-	 * @param currRoomId
-	 * @param chatMessage
+	 * @param currGameId
+	 * @param game
 	 * @param headerAccessor
 	 */
 	@MessageMapping("/game.startGame/{currGameId}")
@@ -86,8 +84,8 @@ public class ChatController {
 
 	/**
 	 * 
-	 * @param currRoomId
-	 * @param chatMessage
+	 * @param currGameId
+	 * @param game
 	 * @param headerAccessor
 	 */
 	@MessageMapping("/game.playGame/{currGameId}")

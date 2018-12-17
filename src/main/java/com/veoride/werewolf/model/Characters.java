@@ -1,4 +1,4 @@
-package com.veoride.chat.model;
+package com.veoride.werewolf.model;
 
 public enum Characters {
     WEREWOLF1,

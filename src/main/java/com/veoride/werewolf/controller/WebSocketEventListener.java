@@ -1,10 +1,6 @@
-package com.veoride.chat.controller;
+package com.veoride.werewolf.controller;
 
 import static java.lang.String.format;
-
-import com.veoride.chat.backend.GameManager;
-import com.veoride.chat.model.Message;
-import com.veoride.chat.properties.ApplicationProperties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +11,9 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import com.veoride.werewolf.backend.GameManager;
+import com.veoride.werewolf.properties.ApplicationProperties;
 
 @Component
 public class WebSocketEventListener {
@@ -49,28 +48,5 @@ public class WebSocketEventListener {
         String username = (String) headerAccessor.getSessionAttributes().get("username");
         String roomId = (String) headerAccessor.getSessionAttributes().get("room_id");
         
-        userDisconnectMessage(username, roomId);
     }
-
-    
-    /**
-     * Determines who left the chat, and deactivates chat rooms after a host leaves (TODO).
-     * @param username
-     * @param roomId
-     * @param chatRoom
-     * @param hostname
-     */
-	private void userDisconnectMessage(String username, String roomId) {
-		if (username != null) {
-
-            logger.info("User Disconnected : " + username);
-
-            Message chatMessage = new Message();
-            chatMessage.setType(Message.MessageType.LEAVE);
-            chatMessage.setSender(username);
-            chatMessage.setContent(username + " left!");
-
-            messagingTemplate.convertAndSend(format(appProps.getMessagingTemplateChatRoom(), roomId), chatMessage);
-        }
-	}
 }

@@ -1,4 +1,4 @@
-package com.veoride.chat.model;
+package com.veoride.werewolf.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
