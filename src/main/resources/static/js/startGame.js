@@ -13,11 +13,9 @@ var roomIdDisplay = document.querySelector('#game-id-display');
 var connectingElement = document.querySelector('.connecting');
 
 var midCardsArea = document.querySelector('#midCardsArea');
-midCardsArea.setAttribute('horizontal','');
+//midCardsArea.setAttribute('horizontal','');
 var playersArea = document.querySelector('#playersArea');
-playersArea.setAttribute('horizontal','');
-
-var newGame = false;
+//playersArea.setAttribute('horizontal','');
 
 var gameId = null;
 var numPlayers = null;
@@ -42,7 +40,6 @@ var stompClient = null;
 //If it is a host filling out the form, we can begin the chat.
 //If it is a client filling out the form, we will validate that the room they plan to join already exists.
 function newGameConnect(event) {
-	newGame = true;
 	var newGameId = newGameIdInput.value.trim();
 	var playerNamesStr = playerNamesInput.value.trim();
 
@@ -67,7 +64,6 @@ function newGameConnect(event) {
 }
 
 function joinGameConnect(event) {
-	newGame = false;
 	var joinGameId = joinGameIdInput.value.trim();
 	gameId = joinGameId;
 
@@ -128,16 +124,13 @@ function createGUI(payload) {
 	}
 
 	//iterate through playersToCharDict
-	var numCardsSoFar = 0;
 	Object.keys(playerToCharDict).forEach(function(key) {
 		var newCard = card.cloneNode(true);
 		var playerIdText = document.createTextNode(key);
 
-		numCardsSoFar = numCardsSoFar+1;
-
 		newCard.addEventListener("ondblclick", function() {
 			window.alert("This card was: " + playerToCharDict[key]);
-		});
+		}, false);
 
 		(function(idx, currCard) {
 			newCard.addEventListener("click", function() { cardClick(idx, currCard); }, false);
@@ -182,7 +175,7 @@ function enterRoom() {
 	}
 
 	// Subscribe to the Public Topic
-	currentSubscription = stompClient.subscribe(`/topic/public/${gameId}`, createGUI); //let's pass the Game object
+	currentSubscription = stompClient.subscribe(`/topic/public/${gameId}`, createGUI);
 }
 
 //Triggered on connection to the "/gameroom" STOMP client
@@ -262,7 +255,7 @@ function switchCards(playerId, midCardIndex, midCharacter) {
 	middleCardsList[midCardIndex] = playerCharacter;
 }
 
-//performs form validation if Host filled out the input form.
+//performs form validation if Host filled out the input form to create a game.
 function validateHostInput(roomNum) {
 
 	if (roomIdList.includes(roomNum)) {
@@ -274,7 +267,7 @@ function validateHostInput(roomNum) {
 	return validHostInput;
 }
 
-//performs form validation if Client filled out the input form.
+//performs form validation if Client filled out the input form to join a game.
 function validateClientInput(roomNum) {
 
 	if (!roomIdList.includes(roomNum)) {

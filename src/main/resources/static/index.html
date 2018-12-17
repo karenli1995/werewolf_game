@@ -5,7 +5,8 @@
 	content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
 <title>One Night Werewolf (created with Spring Boot and
 	Websocket)</title>
-<link rel="stylesheet" href="/css/main.css?1" />
+<link rel="stylesheet" href="/css/main.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body onload="createStompClientForRetrievingAvailableRooms()">
@@ -93,13 +94,14 @@
 		<div class="navbar">
 			<div class="homeDropdown">
 				<button class="homeDropdownBtn">
-					Home <i class="fa fa-carent-down"></i>
+					Home <i class="fa fa-caret-down"></i>
 				</button>
-				<div class="homeDropdownContent">
-					<a href="#">New Game</a> <a href="#">End Game</a>
+				<div class="homeDropdown-content" id="homeDropdown-content">
+					<a href="https://www.fgbradleys.com/rules/rules2/OneNightUltimateWerewolf-rules.pdf" target="_blank"> Original Game Instructions</a>
+					<a href="#">End Game</a>
 				</div>
 			</div>
-			<a href="#instructions">Instructions</a>
+			<a href="#instructions">How To Play</a>
 
 		</div>
 		<div class="game-container">
