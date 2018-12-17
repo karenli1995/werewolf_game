@@ -200,7 +200,7 @@ button.accent {
 }
 
 .game-container {
-    max-width: 700px;
+    max-width: 1000px;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;
@@ -209,23 +209,9 @@ button.accent {
     height: calc(100% - 60px);
     max-height: 600px;
     position: relative;
-}
-
-#game-page ul {
-    list-style-type: none;
-    background-color: #FFF;
-    margin: 0;
+    
     overflow: auto;
     overflow-y: scroll;
-    padding: 0 20px 0px 20px;
-    height: calc(100% - 150px);
-}
-
-#game-page ul li {
-    line-height: 1.5rem;
-    padding: 10px 20px;
-    margin: 0;
-    border-bottom: 1px solid #f4f4f4;
 }
 
 #game-page ul li p {
@@ -241,6 +227,11 @@ button.accent {
 .game-header h2 {
     margin: 0;
     font-weight: 500;
+}
+
+.game-sub-header {
+    text-align: center;
+    padding: 15px;
 }
 
 .connecting {

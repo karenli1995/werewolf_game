@@ -4,6 +4,7 @@ var playerNamesInput = document.querySelector('#player_names');
 var chosenCharactersInput = document.getElementsByName('chosen_characters');
 var newGameIdInput = document.querySelector('#new_game_id');
 var joinGameIdInput = document.querySelector('#join_game_id');
+var revealCardBoxInput = document.querySelector('#revealCardBox');
 
 var chatPage = document.querySelector('#game-page');
 var newGamePage = document.querySelector('#new-game-page');
@@ -13,9 +14,9 @@ var roomIdDisplay = document.querySelector('#game-id-display');
 var connectingElement = document.querySelector('.connecting');
 
 var midCardsArea = document.querySelector('#midCardsArea');
-//midCardsArea.setAttribute('horizontal','');
 var playersArea = document.querySelector('#playersArea');
-//playersArea.setAttribute('horizontal','');
+
+var howToInstructions = document.getElementById("howto");
 
 var gameId = null;
 var numPlayers = null;
@@ -58,18 +59,18 @@ function newGameConnect(event) {
 	numPlayers = currPlayersList.length;
 	gameId = newGameId;
 
-	//if(validateHostInput(newGameId)) {
-	startGame();
-	//}
+	if(validateHostInput(newGameId)) {
+		startGame();
+	}
 }
 
 function joinGameConnect(event) {
 	var joinGameId = joinGameIdInput.value.trim();
 	gameId = joinGameId;
 
-	//if(validateClientInput(joinGameId)) {
-	joinGame();
-	//}
+	if(validateClientInput(joinGameId)) {
+		joinGame();
+	}
 }
 
 //Begins a gameroom and displays appropriate html elements for the gameroom.
@@ -104,15 +105,14 @@ function createGUI(payload) {
 
 	var gameAreaElement = document.createElement('span');
 	gameAreaElement.style.display = 'inline-block';
-//	gameAreaElement.classList.add('chat-message');
 
 	for (var i = 0; i < middleCardsList.length; i++) { 
 		var newCard = card.cloneNode(true);
 		var midCardIdText = document.createTextNode(i+1);
 
-		newCard.addEventListener("ondblclick", function() {
-			window.alert("This card was: " + middleCardsList[i]);
-		});
+		(function(characterName) {
+			newCard.addEventListener("keypress", function() { cardFlipped(characterName); }, false);
+		})(middleCardsList[i]);
 
 		(function(idx, currCard) {
 			newCard.addEventListener("click", function() { cardClick(idx, currCard); }, false);
@@ -120,17 +120,19 @@ function createGUI(payload) {
 
 		newCard.appendChild(midCardIdText);
 
-		gameAreaElement.appendChild(newCard);
+		midCardsArea.appendChild(newCard);
+		midCardsArea.replaceChild(newCard, midCardsArea.childNodes[i]);
 	}
 
 	//iterate through playersToCharDict
+	var numberOfCardsSoFar = 0;
 	Object.keys(playerToCharDict).forEach(function(key) {
 		var newCard = card.cloneNode(true);
 		var playerIdText = document.createTextNode(key);
 
-		newCard.addEventListener("ondblclick", function() {
-			window.alert("This card was: " + playerToCharDict[key]);
-		}, false);
+		(function(characterName) {
+			newCard.addEventListener("keypress", function() { cardFlipped(characterName); }, false);
+		})(playerToCharDict[key]);
 
 		(function(idx, currCard) {
 			newCard.addEventListener("click", function() { cardClick(idx, currCard); }, false);
@@ -138,15 +140,17 @@ function createGUI(payload) {
 
 		newCard.appendChild(playerIdText);
 
-		gameAreaElement.appendChild(newCard);
+		playersArea.appendChild(newCard);
+		playersArea.replaceChild(newCard, playersArea.childNodes[numberOfCardsSoFar]);
+		numberOfCardsSoFar += 1;
 	});
 
-	playersArea.appendChild(gameAreaElement);
-	playersArea.replaceChild(gameAreaElement, playersArea.childNodes[0]);
-	playersArea.scrollTop = playersArea.scrollHeight;
+//	playersArea.appendChild(gameAreaElement);
+//	playersArea.replaceChild(gameAreaElement, playersArea.childNodes[0]);
+//	playersArea.scrollTop = playersArea.scrollHeight;
 
-	midCardsArea.appendChild(gameAreaElement);
-	midCardsArea.replaceChild(gameAreaElement, midCardsArea.childNodes[0]);
+//	midCardsArea.appendChild(gameAreaElement);
+//	midCardsArea.replaceChild(gameAreaElement, midCardsArea.childNodes[0]);
 }
 
 //Leave the current room and enter a new one.
@@ -185,6 +189,10 @@ function onConnected() {
 	connectingElement.classList.add('hidden');
 }
 
+var cardFlipped = function(characterName) {
+	window.alert("This card was: " + characterName);
+}
+
 var cardClick = function(id, currCard) {	
 	currCard.innerHTML = "<img src=\"/images/card_back_selected.jpeg\" width=\"100\">";
 
@@ -198,6 +206,7 @@ var cardClick = function(id, currCard) {
 		var middleCardIndex = null;
 		var firstCardIsMiddle = false;
 		//only one of the cards can possibly be a middle card
+		//TODO
 		if (Number.isInteger(firstCardSelected) && Number.isInteger(secondCardSelected)) {
 //			window.alert("Thou cannot choose 2 middle cards. Try again.");
 //			firstCardSelected = secondCardSelected = false;
@@ -279,6 +288,27 @@ function validateClientInput(roomNum) {
 	return validClientInput;
 }
 
-newGameForm.addEventListener('submit', newGameConnect, true)
-joinGameForm.addEventListener('submit', joinGameConnect, true)
+function showInstructions() {
+	window.alert("Note: This game is meant to be played through video chatting such that players can see each other when the narrator announces players to \"wake up\". " +
+			"Werewolf utilizes this companion app which will act as the narrator: https://itunes.apple.com/us/app/one-night/id728175611?mt=8 " +
+			"\n" +
+	"\n1. To switch 2 cards, click once on the cards you would like to switch. \n2. To view a card, double click the card.");
+}
 
+function revealCard() {
+	var id = revealCardBoxInput.value.trim();
+	if (Number.isInteger(parseInt(id))) {
+		var idAsInt = parseInt(id)-1;
+		var character = middleCardsList[idAsInt];
+		window.alert("The middle card at index " + id + " was: " + character);
+	} else {
+		window.alert(id + "'s card was: " + playerToCharDict[id]);
+	}
+	revealCardBoxInput.value = '';
+}
+
+howToInstructions.addEventListener("click", showInstructions);
+newGameForm.addEventListener('submit', newGameConnect, true);
+joinGameForm.addEventListener('submit', joinGameConnect, true);
+
+document.getElementById("revealCardBtn").addEventListener('click', revealCard);

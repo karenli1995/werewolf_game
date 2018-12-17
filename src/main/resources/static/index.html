@@ -6,7 +6,8 @@
 <title>One Night Werewolf (created with Spring Boot and
 	Websocket)</title>
 <link rel="stylesheet" href="/css/main.css" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body onload="createStompClientForRetrievingAvailableRooms()">
@@ -26,8 +27,9 @@
 				<div class="form-group">
 					<input type="text" id="new_game_id" placeholder="Game ID"
 						autocomplete="off" class="form-control" /> <input type="text"
-						id="player_names" placeholder="Player Names" autocomplete="off"
-						class="form-control" />
+						id="player_names"
+						placeholder="Enter Player Names Separated by a Single Space"
+						autocomplete="off" class="form-control" />
 
 					<ul class="checklist-group">
 						<li><input type="checkbox" name=chosen_characters
@@ -97,11 +99,13 @@
 					Home <i class="fa fa-caret-down"></i>
 				</button>
 				<div class="homeDropdown-content" id="homeDropdown-content">
-					<a href="https://www.fgbradleys.com/rules/rules2/OneNightUltimateWerewolf-rules.pdf" target="_blank"> Original Game Instructions</a>
-					<a href="#">End Game</a>
+					<a
+						href="https://www.fgbradleys.com/rules/rules2/OneNightUltimateWerewolf-rules.pdf"
+						target="_blank"> Original Game Instructions</a> <a href="#"
+						id="endGame">End Game</a>
 				</div>
 			</div>
-			<a href="#instructions">How To Play</a>
+			<a href="#howto" id="howto">How To Play</a>
 
 		</div>
 		<div class="game-container">
@@ -111,8 +115,24 @@
 				</h2>
 			</div>
 			<div class="connecting">Connecting...</div>
+			<div class="game-sub-header">
+				<h3>Middle Cards</h3>
+			</div>
 			<div id="midCardsArea"></div>
+
+			<div class="game-sub-header">
+				<h3>Player Cards</h3>
+			</div>
 			<div id="playersArea"></div>
+
+			<br>
+			<form id="playGameForm" name="playGameForm">
+				<div class="form-group">
+					<input type="text" id="revealCardBox" placeholder="Reveal Card (Enter a player's name, or middle card index)"
+						autocomplete="off" class="form-control" />
+					<button type="button" id="revealCardBtn" class="accent card-reveal-submit">Reveal Card</button>
+				</div>
+			</form>
 		</div>
 	</div>
 
