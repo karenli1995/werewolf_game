@@ -42,7 +42,7 @@ function displayNewGameInputForm() {
 }
 
 function displayJoinGameInputForm() {
-	stompClientForAvailableRooms.send(`/app/chat.availableRooms`, {}, roomIdListJson);
+	stompClientForAvailableRooms.send(`/app/game.availableRooms`, {}, roomIdListJson);
 
 	homePage.classList.add('hidden');
 	joinGamePage.classList.remove('hidden');
